@@ -1,16 +1,26 @@
 <template>
   <div id="app">
+    <div style="margin-bottom: 20px;">
+      <p>range: </p>
+      <label>min:</label>
+      <input v-model="min" type="number" />
+      <label>max:</label>
+      <input v-model="max" type="number" />
+    </div>
     <sub-components
       com="test"
-      :range="[1, 3]"
-      :dataList="['1', '2', '3']"
+      :dataList="dataList"
+      :range="[Number(min), Number(max)]"
       :levelControl="true"
     >
-      <template v-slot:default>
-        THIS IS CONTENT!
+      <template>
+        <p>THIS IS CONTENT!</p>
       </template>
       <template v-slot:levelControl="scope">
-        {{scope}}
+        <div class="menu_container">
+          <div v-if="scope.increase" class="menu-item" @click="dataList.push(dataList.length + 1)">+</div>
+          <div v-if="scope.decrease" class="menu-item" @click="dataList.pop()">-</div>
+        </div>
       </template>
     </sub-components>
   </div>
@@ -26,8 +36,13 @@ export default {
     test,
   },
   data() {
-    return {};
+    return {
+      dataList: [1, 2, 3],
+      min: 2,
+      max: 4,
+    };
   },
+
 };
 </script>
 
@@ -58,5 +73,18 @@ li {
 
 a {
   color: #42b983;
+}
+
+.menu_container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.menu-item {
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  border: 1px solid #000;
+  border-radius: 50%;
 }
 </style>
