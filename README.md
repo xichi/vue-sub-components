@@ -9,6 +9,7 @@
 1. `npm install sub-components`
 2. 在页面中引用sub-components和元组件（以Tabs组件为例）
 ```javaScript
+/* eslint-disable vue/no-unused-components */
 import SubComponents from "sub-components";
 import Tabs from "./components/tabs";
 export default {
