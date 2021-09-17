@@ -4,29 +4,59 @@
 
 区别点在于`sub-components`支持不定层级的“元组件”的渲染。
 
-## 用法
+## 用法示例
 
 1. `npm install sub-components`
-2. 在页面中引用sub-components和元组件（以Demo为例）
+2. 在页面中引用sub-components和元组件（以Tabs组件为例）
 ```javaScript
 import SubComponents from "sub-components";
-import Demo from "./components/demo";
+import Tabs from "./components/tabs";
 export default {
   components: {
     SubComponents,
-    Demo,
+    Tabs,
   },
 ```
 3. 在html中使用该组件，com中传入元组件的名称
 ```html
 <sub-components
-  com="Demo"
-  :dataList="[1, 2, 3]"
-  :range="[0, 4]"
+  com="Tabs"
+  :dataList="tabData"
+  transferLevel
+  @switchTab="switchTab"
 >
-  <p>THIS IS CONTENT!</p>
+  <p>{{ content }}</p>
 </sub-components>
+<script>
+export default {
+  // ...
+  data() {
+    return {
+      tabData: [
+        [1, 2, 3],
+        [1, 2],
+        [1, 2, 3, 4]
+      ],
+      path: [0, 0, 0],
+    };
+  },
+  computed: {
+    content: function() {
+      return 'content' + this.path.reduce((acc, cur) => acc + '-' + (cur + 1), '');
+    },
+  },
+  methods: {
+    switchTab(data) {
+      const { level, index } = data;
+      this.$set(this.path, level, index);
+    },
+  },
+}
+</script>
 ```
+4. 效果展示
+
+![](./imgs/tabs.png)
 
 ## 属性
 
