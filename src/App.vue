@@ -1,48 +1,83 @@
 <template>
   <div id="app">
-    <div style="margin-bottom: 20px;">
-      <p>range: </p>
+    <h1>1. Demo:</h1>
+    <div style="margin-bottom: 20px">
+      <p>range:</p>
       <label>min:</label>
       <input v-model="min" type="number" />
       <label>max:</label>
       <input v-model="max" type="number" />
     </div>
     <sub-components
-      com="test"
+      com="Demo"
       :dataList="dataList"
       :range="[Number(min), Number(max)]"
-      :levelControl="true"
     >
       <template>
         <p>THIS IS CONTENT!</p>
       </template>
       <template v-slot:levelControl="scope">
         <div class="menu_container">
-          <div v-if="scope.increase" class="menu-item" @click="dataList.push(dataList.length + 1)">+</div>
-          <div v-if="scope.decrease" class="menu-item" @click="dataList.pop()">-</div>
+          <div
+            v-if="scope.increase"
+            class="menu-item"
+            @click="dataList.push(dataList.length + 1)"
+          >
+            +
+          </div>
+          <div v-if="scope.decrease" class="menu-item" @click="dataList.pop()">
+            -
+          </div>
         </div>
       </template>
+    </sub-components>
+    <h1>2. Tabs:</h1>
+    <sub-components
+      com="Tabs"
+      :dataList="tabData"
+      transferLevel
+      @switchTab="switchTab"
+    >
+      <p>{{ content }}</p>
     </sub-components>
   </div>
 </template>
 
 <script>
 import SubComponents from "./lib/index";
-import test from "./components/test";
+import Demo from "./components/Demo";
+import Tabs from "./components/Tabs";
 export default {
   name: "app",
   components: {
     SubComponents,
-    test,
+    Demo,
+    Tabs,
   },
   data() {
     return {
       dataList: [1, 2, 3],
       min: 2,
       max: 4,
+      tabData: [
+        [1, 2, 3],
+        [1, 2],
+        [1, 2, 3, 4]
+      ],
+      path: [0, 0, 0],
     };
   },
-
+  computed: {
+    content: function() {
+      return 'content' + this.path.reduce((acc, cur) => acc + '-' + (cur + 1), '');
+    },
+  },
+  methods: {
+    switchTab(data) {
+      const { level, index } = data;
+      this.$set(this.path, level, index);
+    },
+  },
 };
 </script>
 

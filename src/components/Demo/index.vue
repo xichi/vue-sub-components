@@ -12,7 +12,7 @@
 </template>
 <script>
 export default {
-  name: "test",
+  name: "Demo",
   props: {
     data: {
       default: "",

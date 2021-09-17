@@ -26,38 +26,43 @@ export default {
         if (arr[1] < arr[0]) return false;
         return true;
       },
-      default: () => (new Array(2)),
-    },
-    levelControl: {
-      type: Boolean,
-      default: false,
+      default: () => new Array(2),
     },
     config: {
       type: Object,
       default: () => ({}),
-    }
+    },
+    transferLevel: {
+      type: Boolean,
+      default: false,
+    },
   },
   render(h, context) {
     const vm = context;
     const com = vm.parent.$options.components[vm.props.com] || "div";
     const dataList = vm.props.dataList;
     const len = typeof dataList === "number" ? dataList : dataList.length;
-    let [min = len, max = len] = vm.props.range;  
+    let [min = len, max = len] = vm.props.range;
 
     const createChildren = (index = 0) => {
       if (index >= len) {
         const children = [vm.slots().default];
-        if (index >= max || index <= min) {
-          console.warn('[Level Error]: Abnormal level, Not in range!')
+        if (index > max || index < min) {
+          console.log(index, max, min);
+          console.warn("[Level Error]: Abnormal level, Not in range!");
         }
-        if (vm.props.levelControl) {
-          children.push(vm.scopedSlots.levelControl({
+        if (typeof vm.scopedSlots.levelControl === "function") {
+          vm.scopedSlots.levelControl({
             increase: index < max,
-            decrease: index > min,
+            decrease: index >= min,
             level: index,
-          }));
+          });
         }
-        return h('div', { class: "sub-components-content_container" }, children);
+        return h(
+          "div",
+          { class: "sub-components-content_container" },
+          children
+        );
       }
 
       return h(
@@ -65,7 +70,8 @@ export default {
         {
           props: {
             [vm.props.dataType]: dataList[index],
-            ...(vm.props.config[index] ? vm.props.config[index] : {})
+            ...(vm.props.config[index] ? vm.props.config[index] : {}),
+            ...(vm.props.transferLevel ? { level: index } : {}),
           },
           on: vm.listeners,
         },
